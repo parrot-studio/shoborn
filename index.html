@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>(´･ω･`)ｼｮﾎﾞｰﾝとしたー (from Twitter)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="main.css" media="screen" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="shoborn.js"></script>
+    <script type="text/javascript" src="view.js"></script>
+    <script type="text/javascript">
+      $(function(){
+        $("#lv").val(VIEW.view_level());
+        search();
+
+        $("#restart").click(function(){
+          VIEW.reset();
+          search();
+        });
+
+        $("#change").click(function(){
+          VIEW.change_level($("#lv").val());
+        });
+
+        $("#more").click(function(){
+          search();
+          return false;
+        })
+      });
+
+      var search = function(){
+        VIEW.search();
+      }
+    </script>
+  </head>
+  <body>
+    <div class="title_area">
+      <span class="title">(´･ω･`)ｼｮﾎﾞｰﾝとしたー</span>
+      <span class="auther">(from Twitter) by @parrot_studio</span>
+    </div>
+    <div class="explain">
+      <ul>
+        <li>Twitterを検索して(´･ω･`)としてそうなツイートを選んで表示します。</li>
+        <li>新開発の「(´･ω･`)エンジン」により、(´･ω･`)レベルを3段階に分けて表示します。</li>
+        <li>(´･ω･`)レベルを変更しても再検索は行いません。「最新の(´･ω･`)にリロード」をクリックすると再検索します。</li>
+        <li>全てJavascriptによって処理していますので、調子に乗って数を増やしたりすると、ブラウザが落ちることがあります。</li>
+        <li>あまりリロードしていると、Twitterさんが(#ﾟДﾟ)と怒って結果が戻ってこなくなりますので、ほどほどに。</li>
+        <li>その他、何かバグを見つけても笑って許してください。</li>
+        <li>ご意見等は<a href="http://twitter.com/parrot_studio" target="_blank">@parrot_studio</a>まで。（<a href="http://twitter.com/#search?q=%23shoborn" target="_blank">#shoborn</a>）</li>
+      </ul>
+    </div>
+    <hr />
+    <span class="change_form">
+      Lv:<select id="lv">
+        <option value="3">3</option>
+        <option value="2">2</option>
+        <option value="1">1</option>
+        <option value="0">闇</option>
+      </select>
+      <input type="button" id="change" value=" (´･ω･`) レベル変更" />
+    </span>
+    /
+    <span class="restart_form">
+      <input type="button" id="restart" value="最新の (´･ω･`) にリロード" />
+    </span>
+    <br/>
+    <div id="list" class="list"></div>
+    <a id="more" style="display: none" href="#">もっと (´･ω･`) とする</a>
+  </body>
+</html>
