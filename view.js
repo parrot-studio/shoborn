@@ -47,7 +47,7 @@ var VIEW = function(){
     b += "<div class='tweet_user'> From : " + user_link(t.user()) + "</div>";
     b += "<div class='tweet_text'>" + replace_user_link(t.text()) + "</div>";
     b += "<div class='tweet_date'>";
-    b += "<a href='http://twitter.com/" + t.user + "/status/" + t.id() + "'>";
+    b += "<a href='http://twitter.com/" + t.user() + "/status/" + t.id() + "'>";
     b += t.date() + "</a>"
     b  += "</div>";
     b += "</div>";
