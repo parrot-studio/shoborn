@@ -2,7 +2,7 @@ var SHOBORN = function(){
   var that = {};
 
   var search_param = {
-    q : "\uff65\u03c9\uff65",
+    q : "\uff65\u03c9\u30FB",
     rpp : 100,
     page : 1,
     locale : "ja",
