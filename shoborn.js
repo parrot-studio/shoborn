@@ -136,6 +136,7 @@ var SHOBORN = function(){
   that.result_clear = function(){
     result = [];
     index = 0;
+    page_index = 1;
   }
 
   that.view_level = function(){
