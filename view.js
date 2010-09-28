@@ -44,12 +44,15 @@ var VIEW = function(){
     b += "</div>";
 
     b += "<div class='tweet_body'>";
+
     b += "<div class='tweet_user'> From : " + user_link(t.user()) + "</div>";
     b += "<div class='tweet_text'>" + replace_user_link(t.text()) + "</div>";
     b += "<div class='tweet_date'>";
     b += "<a href='http://twitter.com/" + t.user() + "/status/" + t.id() + "' target='_blank'>";
     b += t.date() + "</a>"
-    b  += "</div>";
+    b += "</div>";
+    b += "<div class='tweet_score' style='font-size: "  + (10 + t.combo() * 2) + "px;'> ";
+    b += combo_text(t.combo()) + " / " + t.score() + " SP </div>";
     b += "</div>";
 
     b += "</div>";
@@ -66,6 +69,17 @@ var VIEW = function(){
     return t.replace(user_parser, function(c, name){
       return user_link(name, '@');
     });
+  }
+
+  var combo_text = function(c){
+    var forward = c + " SHOB";
+    var back = "RN COMBO";
+    var i;
+    for(i=0; i<c; i+= 1){
+      forward += "O"
+      back += "!";
+    }
+    return forward + back;
   }
 
   that.clear = function(){
@@ -95,7 +109,7 @@ var VIEW = function(){
 
   that.search_test = function(){
     $("#more").hide();
-    SHOBORN.shoborn_test('data1.json', function(){
+    SHOBORN.shoborn_test('data.json', function(){
       view();
     });
   }
@@ -106,8 +120,3 @@ var VIEW = function(){
 
   return that;
 }();
-
-
-
-
-
