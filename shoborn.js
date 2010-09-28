@@ -14,29 +14,6 @@ var SHOBORN = function(){
   var page_index = 1;
   var view_level = 1;
 
-  var level3 = /[\(（]\s*[\´\']\s*[･・]\s*ω\s*[･・]\s*[\`｀]\s*[\)）]/;
-  var level2a = /[\(（]\s*[\´\']\s*[･・]\s*ω\s*[･・]\s*[\`｀]?\s*[\)）]?/;
-  var level2b = /[\(（]?\s*[\´\']?\s*[･・]\s*ω\s*[･・]\s*[\`｀]\s*[\)）]/;
-  var level1 = /[\(（]?\s*.?\s*[･・]\s*ω\s*[･・]\s*.?\s*[\)）]?/;
-
-  var level_judge = function(t){
-    if (t === ""){
-      return 0;
-    }
-
-    if (level3.test(t)){
-      return 3;
-    } else if(level2a.test(t)){
-      return 2;
-    } else if(level2b.test(t)){
-      return 2;
-    } else if(level1.test(t)){
-      return 1;
-    }
-
-    return 0;
-  }
-
   var tweet = function(t){
     var that = {};
     var raw = t || {};
@@ -44,6 +21,8 @@ var SHOBORN = function(){
     var get = function(name){
       return raw[name] ? raw[name] : "";
     }
+
+    var data = SHOBORN_PARSER(get("text"));
 
     that.id = function(){
       return get("id");
@@ -70,7 +49,15 @@ var SHOBORN = function(){
     }
 
     that.level = function(){
-      return level_judge(get("text"));
+      return data.level();
+    }
+
+    that.score = function(){
+      return data.score();
+    }
+
+    that.combo = function(){
+      return data.combo();
     }
 
     return that;
