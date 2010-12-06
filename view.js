@@ -25,7 +25,7 @@ var VIEW = function(){
     target.addClass(function(){
       return "lv" + t.level();
     });
-    target.fadeIn(500);
+    target.fadeIn(fade_time);
 
     timer = setTimeout(function() {
       view();
