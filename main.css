@@ -65,6 +65,13 @@ a:hover, a:active {
   text-align: left;
 }
 
+.tweet_score {
+  text-align: left;
+  background: #cff;
+  color: #f44;
+  font-weight: bold;
+}
+
 .tweet_text {
   text-align: left;
   background: #fee;
@@ -73,6 +80,7 @@ a:hover, a:active {
 .tweet_date {
   font-size: 10px;
   text-align: right;
+  background: #fee;
 }
 
 .tweet_icon {
