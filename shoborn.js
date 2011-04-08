@@ -1,18 +1,28 @@
 var SHOBORN = function(){
   var that = {};
 
+  var search_url = "http://yats-data.com/yats/search";
   var search_param = {
-    q : "\uff65\u03c9\u30FB",
-    rpp : 100,
+    query : "(´･ω･`)",
     page : 1,
-    locale : "ja",
-    show_user : true
+    fast : ""
   };
 
   var result = [];
   var index = 0;
   var page_index = 1;
   var view_level = 1;
+
+  var api_search = function(func){
+    $.ajax({
+      url : search_url,
+      cache : false,
+      data : search_param,
+      dataType : "jsonp",
+      jsonp : "json",
+      success : func
+    });
+  };
 
   var tweet = function(t){
     var that = {};
@@ -22,30 +32,26 @@ var SHOBORN = function(){
       return raw[name] ? raw[name] : "";
     }
 
-    var data = SHOBORN_PARSER(get("text"));
+    var data = SHOBORN_PARSER(get("content"));
 
     that.id = function(){
       return get("id");
     }
 
     that.user = function(){
-      return get("from_user");
+      return get("user");
     }
 
     that.text = function(){
-      return get("text");
+      return get("content");
     }
 
     that.img_url = function(){
-      return get("profile_image_url");
+      return get("image");
     }
 
     that.date = function(){
-      var d = get("created_at");
-      if (d === ""){
-        return ""
-      }
-      return new Date(d).toLocaleString();
+      return get("time");
     }
 
     that.level = function(){
@@ -71,9 +77,9 @@ var SHOBORN = function(){
 
   that.search = function(func){
     search_param.page = page_index;
-    $.getJSON("http://search.twitter.com/search.json?callback=?", search_param, function(data){
-      parse_tweet(data.results);
-      page_index += 1
+    api_search(function(data){
+      parse_tweet(data);
+      page_index += 1;
       func();
     });
   }
