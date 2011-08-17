@@ -1,25 +1,29 @@
 var SHOBORN = function(){
   var that = {};
 
-  var search_url = "http://yats-data.com/yats/search";
+  var search_url = "http://search.twitter.com/search.json";
   var search_param = {
-    query : "(´･ω･`)",
+    q : "(´･ω･`)",
+    lang : "ja",
     page : 1,
-    fast : ""
+    rpp : 100
   };
 
   var result = [];
   var index = 0;
   var page_index = 1;
   var view_level = 1;
+  var max_id = null;
 
   var api_search = function(func){
+    if (max_id !== null){
+      search_param.max_id = max_id;
+    }
     $.ajax({
       url : search_url,
-      cache : false,
+      cache: false,
       data : search_param,
       dataType : "jsonp",
-      jsonp : "json",
       success : func
     });
   };
@@ -32,26 +36,30 @@ var SHOBORN = function(){
       return raw[name] ? raw[name] : "";
     }
 
-    var data = SHOBORN_PARSER(get("content"));
+    var data = SHOBORN_PARSER(get("text"));
 
     that.id = function(){
       return get("id");
     }
 
     that.user = function(){
-      return get("user");
+      return get("from_user");
     }
 
     that.text = function(){
-      return get("content");
+      return get("text");
     }
 
     that.img_url = function(){
-      return get("image");
+      return get("profile_image_url");
     }
 
     that.date = function(){
-      return get("time");
+      var d = get("created_at");
+      if (d === ""){
+        return ""
+      }
+      return new Date(d).toLocaleString();
     }
 
     that.level = function(){
@@ -78,7 +86,8 @@ var SHOBORN = function(){
   that.search = function(func){
     search_param.page = page_index;
     api_search(function(data){
-      parse_tweet(data);
+      parse_tweet(data.results);
+      max_id = data.max_id
       page_index += 1;
       func();
     });
@@ -130,6 +139,7 @@ var SHOBORN = function(){
     result = [];
     index = 0;
     page_index = 1;
+    max_id = null;
   }
 
   that.view_level = function(){
