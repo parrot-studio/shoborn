@@ -182,7 +182,7 @@
   })();
 
   View = (function() {
-    var add_more_link, add_next, add_tweet, clear, create_tweet_block, fade_time, replace_user_link, reset, rollback, roop_time, search, searcher, timer, user_parser, view_level, view_lv;
+    var add_more_link, add_next, add_tweet, clear, create_tweet_block, fade_time, paused, replace_user_link, reset, rollback, roop_time, search, searcher, timer, user_parser, view_level, view_lv;
 
     function View() {}
 
@@ -194,14 +194,17 @@
 
     view_level = 1;
 
+    paused = false;
+
     timer = new Timer(roop_time);
 
     searcher = new TweetSearcher;
 
     add_next = function() {
       var t;
-      t = searcher.next_for(view_level);
       timer.stop();
+      if (paused) return this;
+      t = searcher.next_for(view_level);
       if (t === null) {
         add_more_link();
       } else {
@@ -303,10 +306,12 @@
       $('#pause').click(function(e) {
         var target;
         target = $(e.target);
-        if (target.hasClass('active')) {
+        if (paused) {
+          paused = false;
           timer.start(add_next);
           target.button('reset');
         } else {
+          paused = true;
           timer.stop();
           target.button('restart');
         }

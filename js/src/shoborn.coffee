@@ -117,13 +117,15 @@ class View
   fade_time = 200
   roop_time = 500
   view_level = 1
+  paused = false
 
   timer = new Timer(roop_time)
   searcher = new TweetSearcher
 
   add_next = ->
-    t = searcher.next_for(view_level)
     timer.stop()
+    return @ if paused
+    t = searcher.next_for(view_level)
     if t == null
       add_more_link()
     else
@@ -220,10 +222,12 @@ class View
 
     $('#pause').click (e) ->
       target = $(e.target)
-      if target.hasClass 'active'
+      if paused
+        paused = false
         timer.start(add_next)
         target.button 'reset'
       else
+        paused = true
         timer.stop()
         target.button 'restart'
       target.button('toggle')
