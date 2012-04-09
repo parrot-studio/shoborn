@@ -108,7 +108,7 @@ class Timer
     @
 
   stop: ->
-    clearTimeout(timer) if timer
+    clearTimeout timer if timer
     timer = null
     @
 
@@ -119,18 +119,18 @@ class View
   view_level = 1
   paused = false
 
-  timer = new Timer(roop_time)
+  timer = new Timer roop_time
   searcher = new TweetSearcher
 
   add_next = ->
     timer.stop()
     return @ if paused
-    t = searcher.next_for(view_level)
+    t = searcher.next_for view_level
     if t == null
       add_more_link()
     else
-      add_tweet(t)
-      timer.start(add_next)
+      add_tweet t
+      timer.start add_next
     @
 
   replace_user_link = (tx) ->
@@ -172,11 +172,11 @@ class View
   add_tweet = (t) ->
     target = $(create_tweet_block t)
     $("#tweet_list").append target
-    target.fadeIn(fade_time)
+    target.fadeIn fade_time
     @
 
   add_more_link = ->
-    $("#more").fadeIn(fade_time)
+    $("#more").fadeIn fade_time
     @
 
   clear = ->
@@ -196,7 +196,7 @@ class View
     @
 
   search = ->
-    searcher.search(add_next)
+    searcher.search add_next
     @
 
   $ ->
@@ -212,29 +212,29 @@ class View
     $('#change-lv').button()
     $('#change-lv > button').click (e) ->
       target = $(e.target)
-      view_level = parseInt target.attr('data-shoborn-lv')
+      view_level = parseInt target.attr 'data-shoborn-lv'
       $('#change-lv > button').removeClass 'btn-primary'
       target.addClass 'btn-primary'
-      target.button('toggle')
+      target.button 'toggle'
       rollback()
-      timer.start(add_next)
+      timer.start add_next
       false
 
     $('#pause').click (e) ->
       target = $(e.target)
       if paused
         paused = false
-        timer.start(add_next)
+        timer.start add_next
         target.button 'reset'
       else
         paused = true
         timer.stop()
         target.button 'restart'
-      target.button('toggle')
+      target.button 'toggle'
       false
 
     $('#page-top').click (e) ->
-      $('body,html').animate({scrollTop: 0}, 600)
+      $('body,html').animate {scrollTop: 0}, 600
       false
 
     search()
