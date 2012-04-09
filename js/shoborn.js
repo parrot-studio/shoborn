@@ -2,7 +2,7 @@
   var Timer, Tweet, TweetSearcher, View;
 
   Tweet = (function() {
-    var format_date, level1, level2a, level2b, level3, levelca, levelcb, parse_level, zero_padding;
+    var formatDate, level1, level2a, level2b, level3, levelca, levelcb, parseLevel, zeroPadding;
 
     level3 = /[\(（]\s*[\´\']\s*[･・]\s*ω\s*[･・]\s*[\`｀]\s*[\)）]/;
 
@@ -20,16 +20,16 @@
       var _ref, _ref2, _ref3, _ref4, _ref5;
       this.id = (_ref = tweet.id_str) != null ? _ref : '';
       this.user = (_ref2 = tweet.from_user) != null ? _ref2 : '';
-      this.user_name = (_ref3 = tweet.from_user_name) != null ? _ref3 : '';
+      this.userName = (_ref3 = tweet.from_user_name) != null ? _ref3 : '';
       this.text = (_ref4 = tweet.text) != null ? _ref4 : '';
-      this.img_url = (_ref5 = tweet.profile_image_url) != null ? _ref5 : '';
-      this.date = format_date(tweet.created_at);
-      this.level = parse_level(this.text);
-      this.user_url = "https://twitter.com/#!/" + this.user;
-      this.tweet_url = "https://twitter.com/#!/" + this.user + "/status/" + this.id;
+      this.imgUrl = (_ref5 = tweet.profile_image_url) != null ? _ref5 : '';
+      this.date = formatDate(tweet.created_at);
+      this.level = parseLevel(this.text);
+      this.userUrl = "https://twitter.com/#!/" + this.user;
+      this.tweetUrl = "https://twitter.com/#!/" + this.user + "/status/" + this.id;
     }
 
-    parse_level = function(t) {
+    parseLevel = function(t) {
       if (t == null) return 0;
       if (level3.test(t)) {
         return 3;
@@ -43,14 +43,14 @@
       return 0;
     };
 
-    format_date = function(ds) {
+    formatDate = function(ds) {
       var d;
       if (!ds) return '';
       d = new Date(ds);
-      return "" + (d.getFullYear()) + "/" + (zero_padding(d.getMonth() + 1)) + "/" + (zero_padding(d.getDate())) + " " + (zero_padding(d.getHours())) + ":" + (zero_padding(d.getMinutes())) + ":" + (zero_padding(d.getSeconds()));
+      return "" + (d.getFullYear()) + "/" + (zeroPadding(d.getMonth() + 1)) + "/" + (zeroPadding(d.getDate())) + " " + (zeroPadding(d.getHours())) + ":" + (zeroPadding(d.getMinutes())) + ":" + (zeroPadding(d.getSeconds()));
     };
 
-    zero_padding = function(n) {
+    zeroPadding = function(n) {
       n = n.toString();
       if (n.length !== 1) return n;
       return "0" + n;
@@ -61,26 +61,26 @@
   })();
 
   TweetSearcher = (function() {
-    var index, max_id, page_index, page_size, parse_tweet, result, search_url, twitter_seaech;
+    var index, maxId, pageIndex, pageSize, parseTweet, result, searchUrl, twitterSeaech;
 
     function TweetSearcher() {}
 
-    search_url = "http://search.twitter.com/search.json";
+    searchUrl = "http://search.twitter.com/search.json";
 
     result = [];
 
     index = 0;
 
-    page_index = 1;
+    pageIndex = 1;
 
-    page_size = 100;
+    pageSize = 100;
 
-    max_id = null;
+    maxId = null;
 
-    twitter_seaech = function(params, func) {
+    twitterSeaech = function(params, func) {
       var p;
       p = {
-        url: search_url,
+        url: searchUrl,
         cache: false,
         data: params,
         dataType: "jsonp",
@@ -92,17 +92,17 @@
       return this;
     };
 
-    parse_tweet = function(data) {
+    parseTweet = function(data) {
       var d, _i, _len, _ref, _ref2;
       _ref = data.results;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         d = _ref[_i];
         result.push(new Tweet(d));
       }
-      if (max_id === null) {
-        max_id = (_ref2 = data.results[0]) != null ? _ref2.id_str : void 0;
+      if (maxId === null) {
+        maxId = (_ref2 = data.results[0]) != null ? _ref2.id_str : void 0;
       }
-      page_index += 1;
+      pageIndex += 1;
       return this;
     };
 
@@ -111,17 +111,17 @@
       p = {
         q: "(´･ω･`) -RT",
         lang: 'ja',
-        page: page_index,
-        rpp: page_size
+        page: pageIndex,
+        rpp: pageSize
       };
-      if (max_id !== null) p.max_id = max_id;
-      twitter_seaech(p, (function(data) {
-        return func(parse_tweet(data));
+      if (maxId !== null) p.max_id = maxId;
+      twitterSeaech(p, (function(data) {
+        return func(parseTweet(data));
       }));
       return this;
     };
 
-    TweetSearcher.prototype.next_for = function(level) {
+    TweetSearcher.prototype.nextFor = function(level) {
       var l, r, ret;
       l = level || 1;
       while (index < result.length) {
@@ -138,8 +138,8 @@
     TweetSearcher.prototype.reset = function() {
       result = [];
       index = 0;
-      page_index = 1;
-      max_id = null;
+      pageIndex = 1;
+      maxId = null;
       return this;
     };
 
@@ -182,45 +182,45 @@
   })();
 
   View = (function() {
-    var add_more_link, add_next, add_tweet, clear, create_tweet_block, fade_time, paused, replace_user_link, reset, rollback, roop_time, search, searcher, timer, user_parser, view_level, view_lv;
+    var addMoreLink, addNext, addTweet, clear, createTweetBlock, fadeTime, paused, replaceUserLink, reset, rollback, roopTime, search, searcher, timer, userParser, viewLevel, viewLv;
 
     function View() {}
 
-    user_parser = /@([a-zA-Z0-9_]+)/g;
+    userParser = /@([a-zA-Z0-9_]+)/g;
 
-    fade_time = 200;
+    fadeTime = 200;
 
-    roop_time = 500;
+    roopTime = 500;
 
-    view_level = 1;
+    viewLevel = 1;
 
     paused = false;
 
-    timer = new Timer(roop_time);
+    timer = new Timer(roopTime);
 
     searcher = new TweetSearcher;
 
-    add_next = function() {
+    addNext = function() {
       var t;
       timer.stop();
       if (paused) return this;
-      t = searcher.next_for(view_level);
+      t = searcher.nextFor(viewLevel);
       if (t === null) {
-        add_more_link();
+        addMoreLink();
       } else {
-        add_tweet(t);
-        timer.start(add_next);
+        addTweet(t);
+        timer.start(addNext);
       }
       return this;
     };
 
-    replace_user_link = function(tx) {
-      return tx.replace(user_parser, function(auser, uid) {
+    replaceUserLink = function(tx) {
+      return tx.replace(userParser, function(auser, uid) {
         return "<a href='https://twitter.com/#!/" + uid + "' target='_blank'>@" + uid + "</a>";
       });
     };
 
-    view_lv = function(lv) {
+    viewLv = function(lv) {
       switch (lv) {
         case 0:
           return '(･ω･)';
@@ -235,26 +235,26 @@
       }
     };
 
-    create_tweet_block = function(tweet) {
-      return "<div class=\"tweet-block span8\">\n  <div class=\"tweet-user-img\">\n    <img src=\"" + tweet.img_url + "\" />\n  </div>\n  <div class=\"tweet-body lv" + tweet.level + "\">\n    <p>\n      " + (replace_user_link(tweet.text)) + "<br/>\n      <small>\n        Lv:" + (view_lv(tweet.level)) + "\n        by <a href=\"" + tweet.user_url + "\" target=\"_blank\">" + tweet.user + " / " + tweet.user_name + "</a>\n        at <a href=\"" + tweet.tweet_url + "\" target=\"_blank\">" + tweet.date + "</a>\n      </small>\n    </p>\n  </div>\n</div>";
+    createTweetBlock = function(tweet) {
+      return "<div class=\"tweet-block span8\">\n  <div class=\"tweet-user-img\">\n    <img src=\"" + tweet.imgUrl + "\" />\n  </div>\n  <div class=\"tweet-body lv" + tweet.level + "\">\n    <p>\n      " + (replaceUserLink(tweet.text)) + "<br/>\n      <small>\n        Lv:" + (viewLv(tweet.level)) + "\n        by <a href=\"" + tweet.userUrl + "\" target=\"_blank\">" + tweet.user + " / " + tweet.userName + "</a>\n        at <a href=\"" + tweet.tweetUrl + "\" target=\"_blank\">" + tweet.date + "</a>\n      </small>\n    </p>\n  </div>\n</div>";
     };
 
-    add_tweet = function(t) {
+    addTweet = function(t) {
       var target;
-      target = $(create_tweet_block(t));
-      $("#tweet_list").append(target);
-      target.fadeIn(fade_time);
+      target = $(createTweetBlock(t));
+      $("#tweet-list").append(target);
+      target.fadeIn(fadeTime);
       return this;
     };
 
-    add_more_link = function() {
-      $("#more").fadeIn(fade_time);
+    addMoreLink = function() {
+      $("#more").fadeIn(fadeTime);
       return this;
     };
 
     clear = function() {
       timer.stop();
-      $("#tweet_list").empty();
+      $("#tweet-list").empty();
       $("#more").hide();
       return this;
     };
@@ -272,7 +272,7 @@
     };
 
     search = function() {
-      searcher.search(add_next);
+      searcher.search(addNext);
       return this;
     };
 
@@ -295,12 +295,12 @@
       $('#change-lv > button').click(function(e) {
         var target;
         target = $(e.target);
-        view_level = parseInt(target.attr('data-shoborn-lv'));
+        viewLevel = parseInt(target.attr('data-shoborn-lv'));
         $('#change-lv > button').removeClass('btn-primary');
         target.addClass('btn-primary');
         target.button('toggle');
         rollback();
-        timer.start(add_next);
+        timer.start(addNext);
         return false;
       });
       $('#pause').click(function(e) {
@@ -308,7 +308,7 @@
         target = $(e.target);
         if (paused) {
           paused = false;
-          timer.start(add_next);
+          timer.start(addNext);
           target.button('reset');
         } else {
           paused = true;

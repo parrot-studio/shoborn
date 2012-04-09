@@ -9,15 +9,15 @@ class Tweet
   constructor: (tweet) ->
     @id = tweet.id_str ? ''
     @user = tweet.from_user ? ''
-    @user_name = tweet.from_user_name ? ''
+    @userName = tweet.from_user_name ? ''
     @text = tweet.text ? ''
-    @img_url = tweet.profile_image_url ? ''
-    @date = format_date tweet.created_at
-    @level = parse_level @text
-    @user_url = "https://twitter.com/#!/#{@user}"
-    @tweet_url = "https://twitter.com/#!/#{@user}/status/#{@id}"
+    @imgUrl = tweet.profile_image_url ? ''
+    @date = formatDate tweet.created_at
+    @level = parseLevel @text
+    @userUrl = "https://twitter.com/#!/#{@user}"
+    @tweetUrl = "https://twitter.com/#!/#{@user}/status/#{@id}"
 
-  parse_level = (t) ->
+  parseLevel = (t) ->
     return 0 unless t?
     if level3.test t
       return 3
@@ -29,28 +29,28 @@ class Tweet
       return 1
     0
 
-  format_date = (ds) ->
+  formatDate = (ds) ->
     return '' unless ds
     d = new Date ds
-    "#{d.getFullYear()}/#{zero_padding d.getMonth() + 1}/#{zero_padding d.getDate()} #{zero_padding d.getHours()}:#{zero_padding d.getMinutes()}:#{zero_padding d.getSeconds()}"
+    "#{d.getFullYear()}/#{zeroPadding d.getMonth() + 1}/#{zeroPadding d.getDate()} #{zeroPadding d.getHours()}:#{zeroPadding d.getMinutes()}:#{zeroPadding d.getSeconds()}"
 
-  zero_padding = (n) ->
+  zeroPadding = (n) ->
     n = n.toString()
     return n unless n.length == 1
     "0#{n}"
 
 class TweetSearcher
-  search_url = "http://search.twitter.com/search.json"
+  searchUrl = "http://search.twitter.com/search.json"
 
   result = []
   index = 0
-  page_index = 1
-  page_size = 100
-  max_id = null
+  pageIndex = 1
+  pageSize = 100
+  maxId = null
 
-  twitter_seaech = (params, func) ->
+  twitterSeaech = (params, func) ->
     p =
-      url : search_url,
+      url : searchUrl,
       cache: false,
       data : params,
       dataType : "jsonp",
@@ -58,24 +58,24 @@ class TweetSearcher
     $.ajax p
     @
 
-  parse_tweet = (data) ->
+  parseTweet = (data) ->
     for d in data.results
       result.push new Tweet(d)
-    max_id = data.results[0]?.id_str if max_id == null
-    page_index += 1
+    maxId = data.results[0]?.id_str if maxId == null
+    pageIndex += 1
     @
 
   search: (func) ->
     p =
       q: "(´･ω･`) -RT",
       lang: 'ja'
-      page: page_index,
-      rpp: page_size
-    p.max_id = max_id unless max_id == null
-    twitter_seaech p, ((data) -> func parse_tweet data)
+      page: pageIndex,
+      rpp: pageSize
+    p.max_id = maxId unless maxId == null
+    twitterSeaech p, ((data) -> func parseTweet data)
     @
 
-  next_for: (level) ->
+  nextFor: (level) ->
     l = (level || 1)
     while index < result.length
       r = result[index]
@@ -88,8 +88,8 @@ class TweetSearcher
   reset: ->
     result = []
     index = 0
-    page_index = 1
-    max_id = null
+    pageIndex = 1
+    maxId = null
     @
 
   rollback: -> index = 0
@@ -113,31 +113,32 @@ class Timer
     @
 
 class View
-  user_parser = /@([a-zA-Z0-9_]+)/g
-  fade_time = 200
-  roop_time = 500
-  view_level = 1
+  userParser = /@([a-zA-Z0-9_]+)/g
+  fadeTime = 200
+  roopTime = 500
+  scrollTime = 600
+  viewLevel = 1
   paused = false
 
-  timer = new Timer roop_time
+  timer = new Timer roopTime
   searcher = new TweetSearcher
 
-  add_next = ->
+  addNext = ->
     timer.stop()
     return @ if paused
-    t = searcher.next_for view_level
+    t = searcher.nextFor viewLevel
     if t == null
-      add_more_link()
+      addMoreLink()
     else
-      add_tweet t
-      timer.start add_next
+      addTweet t
+      timer.start addNext
     @
 
-  replace_user_link = (tx) ->
-    tx.replace user_parser, (auser, uid) ->
+  replaceUserLink = (tx) ->
+    tx.replace userParser, (auser, uid) ->
       "<a href='https://twitter.com/#!/#{uid}' target='_blank'>@#{uid}</a>"
 
-  view_lv = (lv) ->
+  viewLv = (lv) ->
     switch lv
       when 0
         '(･ω･)'
@@ -150,38 +151,38 @@ class View
       else
         ''
 
-  create_tweet_block = (tweet) ->
+  createTweetBlock = (tweet) ->
     """
 <div class="tweet-block span8">
   <div class="tweet-user-img">
-    <img src="#{tweet.img_url}" />
+    <img src="#{tweet.imgUrl}" />
   </div>
   <div class="tweet-body lv#{tweet.level}">
     <p>
-      #{replace_user_link tweet.text}<br/>
+      #{replaceUserLink tweet.text}<br/>
       <small>
-        Lv:#{view_lv tweet.level}
-        by <a href="#{tweet.user_url}" target="_blank">#{tweet.user} / #{tweet.user_name}</a>
-        at <a href="#{tweet.tweet_url}" target="_blank">#{tweet.date}</a>
+        Lv:#{viewLv tweet.level}
+        by <a href="#{tweet.userUrl}" target="_blank">#{tweet.user} / #{tweet.userName}</a>
+        at <a href="#{tweet.tweetUrl}" target="_blank">#{tweet.date}</a>
       </small>
     </p>
   </div>
 </div>
     """
 
-  add_tweet = (t) ->
-    target = $(create_tweet_block t)
-    $("#tweet_list").append target
-    target.fadeIn fade_time
+  addTweet = (t) ->
+    target = $(createTweetBlock t)
+    $("#tweet-list").append target
+    target.fadeIn fadeTime
     @
 
-  add_more_link = ->
-    $("#more").fadeIn fade_time
+  addMoreLink = ->
+    $("#more").fadeIn fadeTime
     @
 
   clear = ->
     timer.stop()
-    $("#tweet_list").empty()
+    $("#tweet-list").empty()
     $("#more").hide()
     @
 
@@ -196,7 +197,7 @@ class View
     @
 
   search = ->
-    searcher.search add_next
+    searcher.search addNext
     @
 
   $ ->
@@ -212,19 +213,19 @@ class View
     $('#change-lv').button()
     $('#change-lv > button').click (e) ->
       target = $(e.target)
-      view_level = parseInt target.attr 'data-shoborn-lv'
+      viewLevel = parseInt target.attr 'data-shoborn-lv'
       $('#change-lv > button').removeClass 'btn-primary'
       target.addClass 'btn-primary'
       target.button 'toggle'
       rollback()
-      timer.start add_next
+      timer.start addNext
       false
 
-    $('#pause').click (e) ->
-      target = $(e.target)
+    $('#pause').click ->
+      target = $('#pause')
       if paused
         paused = false
-        timer.start add_next
+        timer.start addNext
         target.button 'reset'
       else
         paused = true
@@ -233,8 +234,8 @@ class View
       target.button 'toggle'
       false
 
-    $('#page-top').click (e) ->
-      $('body,html').animate {scrollTop: 0}, 600
+    $('#page-top').click ->
+      $('body,html').animate {scrollTop: 0}, scrollTime
       false
 
     search()
