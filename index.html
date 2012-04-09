@@ -61,10 +61,67 @@
     <div class="modal hide" id="about">
       <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
-        <h3>(´･ω･`)ｼｮﾎﾞｰﾝとしたー とは？</h3>
+        <h3>About : (´･ω･`)ｼｮﾎﾞｰﾝとしたー</h3>
       </div>
       <div class="modal-body">
-        <p>Twitterを検索して(´･ω･`)としてそうなツイートを選んで表示します。</p>
+        <div>
+          <h4>概要</h4>
+          <ul>
+            <li>Twitterを検索して(´･ω･`)としてそうなツイートを選んで表示します。</li>
+            <li>「(´･ω･`)エンジン」により、(´･ω･`)レベルを3段階に分けて表示します。</li>
+            <li>(´･ω･`)っぽい顔文字ほど(´･ω･`)レベルが高くなります。</li>
+            <li>Lv1:(´･ω･`) Lv2:(´･ω･`)ω･`) Lv3:(´･ω･`)ω･`)ω･`)</li>
+            <li>レベルのボタンを切り替えることで、表示するTweetを絞り込めます。</li>
+            <li>ご意見等は<a href="https://twitter.com/#!/parrot_studio" target="_blank">@parrot_studio</a>まで。</li>
+          </ul>
+        </div>
+        <div>
+          <h4>更新履歴</h4>
+          <dl>
+            <dt>Ver5.0(2012/04/09)</dt>
+            <dd>
+              <ul>
+                <li>CoffeeScriptとBootstrapで全体を書き換えました。</li>
+                <li>TwitterAPIの仕様変更に対応しました。</li>
+                <li>公式の検索APIの精度が高くなったため、Lv0を廃止しました。</li>
+                <li>意味がないのでSCSを廃止しました。</li>
+                <li>表示の一時停止ボタンを追加しました。</li>
+                <li>その他、細かい挙動の変更がいっぱい。</li>
+              </ul>
+            </dd>
+            <dt>Ver4.0(2011/08/17)</dt>
+            <dd>
+              <ul>
+                <li>検索APIをTwitter公式API差し替えました。</li>
+                <li>yats-data.com様のAPIが閉鎖されたためです。</li>
+                <li>公式APIの精度が上がりすぎて、ほとんどLv3で返ってきますΣ(ﾟДﾟ)ｶﾞｰﾝ</li>
+              </ul>
+            </dd>
+            <dt>Ver3.0(2011/04/08)</dt>
+            <dd>
+              <ul>
+                <li>検索APIを http://yats-data.com/yats/ 様のものに差し替えました。</li>
+                <li>Twitterの標準APIの仕様が変更されたためです。</li>
+                <li>結果が最新ではない等、一部の挙動が異なりますが、気にしない( ﾟДﾟ)y─~~</li>
+              </ul>
+            </dd>
+            <dt>Ver2.0(2010/09/29)</dt>
+            <dd>
+              <ul>
+                <li>(´･ω･`)エンジンに新機能「SCS(SHOBORN COMBO SYSTEM)」が追加されました。</li>
+                <li>SCSは文脈に応じてCOMBOを算出し、そこからSP(SHOBORN POINT)を返します。</li>
+                <li>基本的には(´･ω･`)レベルが高いほど高得点ですが、COMBOが発生すると全くわかりません。</li>
+                <li>COMBOを狙ったテスト投稿をしすぎてフォローを外されても、私のせいにしないように( ﾟДﾟ)y─~~</li>
+              </ul>
+            </dd>
+            <dt>Ver1.0(2010/09/14)</dt>
+            <dd>
+              <ul>
+                <li>初版</li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
       </div>
       <div class="modal-footer">
         <a class="btn" data-dismiss="modal">Close</a>
