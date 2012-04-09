@@ -1,91 +1,78 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
   <head>
-    <title>(´･ω･`)ｼｮﾎﾞｰﾝとしたー (from Twitter)</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link href="main.css" media="screen" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
-    <script type="text/javascript" src="parser.js"></script>
-    <script type="text/javascript" src="shoborn.js"></script>
-    <script type="text/javascript" src="view.js"></script>
-    <script type="text/javascript">
-      $(function(){
-        $("#lv").val(VIEW.view_level());
-        search();
-
-        $("#restart").click(function(){
-          VIEW.reset();
-          search();
-        });
-
-        $("#change").click(function(){
-          VIEW.change_level($("#lv").val());
-        });
-
-        $("#more").click(function(){
-          search();
-          return false;
-        })
-      });
-
-      var search = function(){
-        VIEW.search();
-      }
-    </script>
+    <title>(´･ω･`)ｼｮﾎﾞｰﾝとしたー</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./css/bootstrap.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="./css/shoborn.css" media="screen" rel="stylesheet" type="text/css" />
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-    <div class="title_area">
-      <span class="title">(´･ω･`)ｼｮﾎﾞｰﾝとしたー</span>
-      <span class="auther">(from Twitter) by @parrot_studio</span>
+    <div class="container" id="top">
+      <header>
+        <div class="title">
+          <h1>(´･ω･`)ｼｮﾎﾞｰﾝとしたー</h1>
+        </div>
+        <div>
+          <p>
+            by <a href="http://twitter.com/parrot_studio/">@parrot_studio</a> 2010-2012<br />
+            <a href="http://parrot-studio.com/" target="_blank">parrot-studio.com</a>
+          </p>
+        </div>
+      </header>
+      <div class="row">
+        <div class="span8" id="controller">
+          <div class="btn-toolbar">
+            <div class="btn-group">
+              <button class="btn btn-info" data-toggle="modal" data-target="#about">説明</button>
+            </div>
+            <div class="btn-group" id="change-lv" data-toggle="buttons-radio">
+              <button class="btn btn-primary active" data-shoborn-lv="1">(´･ω･`)</button>
+              <button class="btn" data-shoborn-lv="2">(´･ω･`)ω･`)</button>
+              <button class="btn" data-shoborn-lv="3">(´･ω･`)ω･`)ω･`)</button>
+            </div>
+            <div class="btn-group">
+              <button class="btn" id="pause" data-restart-text="(´･ω･`) 再開">(´･ω･`) 停止</button>
+            </div>
+            <div class="btn-group">
+              <button class="btn" id="reload">最新の (´･ω･`) にリロード</button>
+            </div>
+          </div>
+        </div>
+        <div class="span12">
+          <div id="tweet_list" class="clearfix">
+          </div>
+        </div>
+        <div class="span12">
+          <div class="btn-toolbar">
+            <div class="btn-group">
+              <button class="btn" id="more">もっと (´･ω･`) とする</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="explain">
-      <ul>
-        <li>Twitterを検索して(´･ω･`)としてそうなツイートを選んで表示します。</li>
-        <li>新開発の「(´･ω･`)エンジン」により、(´･ω･`)レベルを3段階に分けて表示します。</li>
-        <li>全てJavascriptによって処理していますので、調子に乗って数を増やしたりすると、ブラウザが落ちることがあります。</li>
-        <li>その他、何かバグを見つけても笑って許してください。</li>
-        <li>ご意見等は<a href="http://twitter.com/parrot_studio" target="_blank">@parrot_studio</a>まで。（<a href="http://twitter.com/#search?q=%23shoborn" target="_blank">#shoborn</a>）</li>
-      </ul>
-      <ul>
-        <li>2011/08/17 Ver4.0</li>
-        <li>検索APIをTwitter公式API差し替えました。</li>
-        <li>yats-data.com様のAPIが閉鎖されたためです。</li>
-        <li>公式APIの精度が上がりすぎて、ほとんどLv3で返ってきますΣ(ﾟДﾟ)ｶﾞｰﾝ</li>
-      </ul>
-      <ul>
-        <li>2011/04/08 Ver3.0</li>
-        <li>検索APIを http://yats-data.com/yats/ 様のものに差し替えました。</li>
-        <li>Twitterの標準APIの仕様が変更されたためです。</li>
-        <li>結果が最新ではない等、一部の挙動が異なりますが、気にしない( ﾟДﾟ)y─~~</li>
-      </ul>
-      <ul>
-        <li>2010/09/29 Ver2.0</li>
-        <li>(´･ω･`)エンジンに新機能「SCS(SHOBORN COMBO SYSTEM)」が追加されました。</li>
-        <li>SCSは文脈に応じてCOMBOを算出し、そこからSP(SHOBORN POINT)を返します。</li>
-        <li>基本的には(´･ω･`)レベルが高いほど高得点ですが、COMBOが発生すると全くわかりません。</li>
-        <li>COMBOを狙ったテスト投稿をしすぎてフォローを外されても、私のせいにしないように( ﾟДﾟ)y─~~</li>
-      </ul>
-      <ul>
-        <li>2010/09/14 Ver1.0</li>
-        <li>初版</li>
-      </ul>
+
+    <p id="page-top"><a href="#top">上に戻る (`･ω･´)ノ</a></p>
+
+    <div class="modal hide" id="about">
+      <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>(´･ω･`)ｼｮﾎﾞｰﾝとしたー とは？</h3>
+      </div>
+      <div class="modal-body">
+        <p>Twitterを検索して(´･ω･`)としてそうなツイートを選んで表示します。</p>
+      </div>
+      <div class="modal-footer">
+        <a class="btn" data-dismiss="modal">Close</a>
+      </div>
     </div>
-    <hr />
-    <span class="change_form">
-      Lv:<select id="lv">
-        <option value="3">3</option>
-        <option value="2">2</option>
-        <option value="1">1</option>
-        <option value="0">闇</option>
-      </select>
-      <input type="button" id="change" value=" (´･ω･`) レベル変更" />
-    </span>
-    /
-    <span class="restart_form">
-      <input type="button" id="restart" value="最新の (´･ω･`) にリロード" />
-    </span>
-    <br/>
-    <div id="list" class="list"></div>
-    <a id="more" style="display: none" href="#">もっと (´･ω･`) とする</a>
+
+    <script src="./js/jquery.js"></script>
+    <script src="./js/bootstrap.js"></script>
+    <script src="./js/shoborn.js"></script>
   </body>
 </html>
