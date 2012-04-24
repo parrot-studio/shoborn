@@ -61,7 +61,7 @@
   })();
 
   TweetSearcher = (function() {
-    var index, maxId, pageIndex, pageSize, parseTweet, result, searchUrl, twitterSeaech;
+    var index, nextId, pageSize, parseTweet, result, searchUrl, twitterSeaech;
 
     function TweetSearcher() {}
 
@@ -71,11 +71,9 @@
 
     index = 0;
 
-    pageIndex = 1;
-
     pageSize = 100;
 
-    maxId = null;
+    nextId = null;
 
     twitterSeaech = function(params, func) {
       var p;
@@ -93,16 +91,13 @@
     };
 
     parseTweet = function(data) {
-      var d, _i, _len, _ref, _ref2;
+      var d, _i, _len, _ref;
       _ref = data.results;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         d = _ref[_i];
         result.push(new Tweet(d));
+        nextId = d.id;
       }
-      if (maxId === null) {
-        maxId = (_ref2 = data.results[0]) != null ? _ref2.id_str : void 0;
-      }
-      pageIndex += 1;
       return this;
     };
 
@@ -111,10 +106,9 @@
       p = {
         q: "(´･ω･`) -RT",
         lang: 'ja',
-        page: pageIndex,
         rpp: pageSize
       };
-      if (maxId !== null) p.max_id = maxId;
+      if (nextId !== null) p.max_id = nextId;
       twitterSeaech(p, (function(data) {
         return func(parseTweet(data));
       }));
@@ -138,8 +132,7 @@
     TweetSearcher.prototype.reset = function() {
       result = [];
       index = 0;
-      pageIndex = 1;
-      maxId = null;
+      nextId = null;
       return this;
     };
 
@@ -182,7 +175,7 @@
   })();
 
   View = (function() {
-    var addMoreLink, addNext, addTweet, clear, createTweetBlock, fadeTime, paused, replaceUserLink, reset, rollback, roopTime, search, searcher, timer, userParser, viewLevel, viewLv;
+    var addMoreLink, addNext, addTweet, clear, createTweetBlock, fadeTime, paused, replaceUserLink, reset, rollback, roopTime, scrollTime, search, searcher, timer, userParser, viewLevel, viewLv;
 
     function View() {}
 
@@ -191,6 +184,8 @@
     fadeTime = 200;
 
     roopTime = 500;
+
+    scrollTime = 600;
 
     viewLevel = 1;
 
@@ -303,9 +298,9 @@
         timer.start(addNext);
         return false;
       });
-      $('#pause').click(function(e) {
+      $('#pause').click(function() {
         var target;
-        target = $(e.target);
+        target = $('#pause');
         if (paused) {
           paused = false;
           timer.start(addNext);
@@ -318,10 +313,10 @@
         target.button('toggle');
         return false;
       });
-      $('#page-top').click(function(e) {
+      $('#page-top').click(function() {
         $('body,html').animate({
           scrollTop: 0
-        }, 600);
+        }, scrollTime);
         return false;
       });
       search();
