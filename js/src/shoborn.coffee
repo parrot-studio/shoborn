@@ -1,10 +1,10 @@
 class Tweet
-  level3 = /[\(（]\s*[\´\']\s*[･・]\s*ω\s*[･・]\s*[\`｀]\s*[\)）]/;
-  level2a = /[\(（]\s*[\´\']\s*[･・]\s*ω\s*[･・]\s*[\`｀]?\s*[\)）]?/;
-  level2b = /[\(（]?\s*[\´\']?\s*[･・]\s*ω\s*[･・]\s*[\`｀]\s*[\)）]/;
-  level1 = /[\(（]?\s*.?\s*[･・]\s*ω\s*[･・]\s*.?\s*[\)）]?/;
-  levelca = /[･・]\s*ω\s*[･・]?/;
-  levelcb = /[･・]?\s*ω\s*[･・]/;
+  level3 = /[\(（]\s*[\´\']\s*[･・]\s*ω\s*[･・]\s*[\`｀]\s*[\)）]/
+  level2a = /[\(（]\s*[\´\']\s*[･・]\s*ω\s*[･・]\s*[\`｀]?\s*[\)）]?/
+  level2b = /[\(（]?\s*[\´\']?\s*[･・]\s*ω\s*[･・]\s*[\`｀]\s*[\)）]/
+  level1 = /[\(（]?\s*.?\s*[･・]\s*ω\s*[･・]\s*.?\s*[\)）]?/
+  levelca = /[･・]\s*ω\s*[･・]?/
+  levelcb = /[･・]?\s*ω\s*[･・]/
 
   constructor: (tweet) ->
     @id = tweet.id_str ? ''
@@ -44,16 +44,15 @@ class TweetSearcher
 
   result = []
   index = 0
-  pageIndex = 1
   pageSize = 100
-  maxId = null
+  nextId = null
 
   twitterSeaech = (params, func) ->
     p =
-      url : searchUrl,
-      cache: false,
-      data : params,
-      dataType : "jsonp",
+      url : searchUrl
+      cache: false
+      data : params
+      dataType : "jsonp"
       success : ((data)-> func data)
     $.ajax p
     @
@@ -61,17 +60,15 @@ class TweetSearcher
   parseTweet = (data) ->
     for d in data.results
       result.push new Tweet(d)
-    maxId = data.results[0]?.id_str if maxId == null
-    pageIndex += 1
+      nextId = d.id
     @
 
   search: (func) ->
     p =
-      q: "(´･ω･`) -RT",
+      q: "(´･ω･`) -RT"
       lang: 'ja'
-      page: pageIndex,
       rpp: pageSize
-    p.max_id = maxId unless maxId == null
+    p.max_id = nextId unless nextId == null
     twitterSeaech p, ((data) -> func parseTweet data)
     @
 
@@ -88,8 +85,7 @@ class TweetSearcher
   reset: ->
     result = []
     index = 0
-    pageIndex = 1
-    maxId = null
+    nextId = null
     @
 
   rollback: -> index = 0
